@@ -27,6 +27,7 @@ public class LoginImp {
     public boolean validUser(String username, String password) {
 //        String sql = "SELECT COUNT(*) FROM userslogin WHERE username = ? AND password = ?";
 //        int count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
-        return true;
+
+        return "trang".equals(username) && "123".equals(password);
     }
 }
