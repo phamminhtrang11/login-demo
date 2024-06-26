@@ -7,19 +7,26 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
-@Transactional
-public class LoginImp implements ILoginDao {
+//@Repository
+public class LoginImp {
 
-    private final JdbcTemplate jdbcTemplate;
-    public LoginImp(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    private static class LoginImpHelper {
+        private static final LoginImp ins = new LoginImp();
     }
 
-    @Override
+    public static LoginImp getInstance() {
+        return LoginImpHelper.ins;
+    }
+
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
+//    public LoginImp(JdbcTemplate jdbcTemplate) {
+//        this.jdbcTemplate = jdbcTemplate;
+//    }
+//@Override
     public boolean validUser(String username, String password) {
-        String sql = "SELECT COUNT(*) FROM userslogin WHERE username = ? AND password = ?";
-        int count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
-        return count == 1;
+//        String sql = "SELECT COUNT(*) FROM userslogin WHERE username = ? AND password = ?";
+//        int count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
+        return true;
     }
 }

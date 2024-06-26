@@ -4,7 +4,7 @@
     <title>Login</title>
 </head>
 <body>
-<form action="http://localhost:6777/untitled6_war/dologin" method="post">
+<form action="http://localhost:6777/dologin" method="post">
     <table>
         <tr>
             <td>Username</td>
