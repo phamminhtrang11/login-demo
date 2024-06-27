@@ -7,8 +7,7 @@
     <script>
         $(document).ready(function() {
             $('#loginForm').submit(function(event) {
-                event.preventDefault(); // Prevent the form from submitting the default way
-
+                event.preventDefault();
                 // Validate username and password
                 var username = $('input[name="username"]').val().trim();
                 var password = $('input[name="password"]').val().trim();
@@ -28,7 +27,6 @@
                     return;
                 }
 
-                // Hide error message if present
                 $('#error').hide();
 
                 // AJAX request
@@ -37,10 +35,8 @@
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        // Log the response to the console for debugging
                         console.log(response);
 
-                        // Ensure response is parsed as JSON
                         if (typeof response === 'string') {
                             response = JSON.parse(response);
                         }
@@ -48,11 +44,10 @@
                         if (response.success) {
                             window.location.href = response.redirectURL; // Redirect on success
                         } else {
-                            $('#error').text('Invalid username or password').show(); // Show error message
+                            $('#error').text('Invalid username or password').show();
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Log the error details to the console for debugging
                         console.error('Error:', status, error);
                         console.error('Response:', xhr.responseText);
 

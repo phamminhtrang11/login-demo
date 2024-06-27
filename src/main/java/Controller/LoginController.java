@@ -21,7 +21,7 @@ public class LoginController {
         JSONObject jsonResponse = new JSONObject();
         if (loginFlag) {
             jsonResponse.put("success", true);
-            jsonResponse.put("redirectURL", "/success"); // Change to your desired URL
+            jsonResponse.put("redirectURL", "/success");
         } else {
             jsonResponse.put("success", false);
         }
@@ -30,6 +30,6 @@ public class LoginController {
 
     @GetMapping("/success")
     public String getSuccessPage() {
-        return "success"; // Ensure you have a success.jsp or similar
+        return "success";
     }
 }
