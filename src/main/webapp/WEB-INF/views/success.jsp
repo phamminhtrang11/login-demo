@@ -9,9 +9,10 @@
 <html>
 <head>
     <title>success</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h2>Login success</h2>
+<h2 class="text-center mt-5">Login success</h2>
 </body>
 </html>
 
