@@ -1,6 +1,5 @@
 package Controller;
 
-import ILogin.ILoginDao;
 import ILogin.imp.LoginImp;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
