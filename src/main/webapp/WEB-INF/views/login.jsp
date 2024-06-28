@@ -1,83 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="loginApp">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.20.1/dist/jquery.validate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#loginForm').validate({
-                rules: {
-                    username: {
-                        required: true
-                    },
-                    password: {
-                        required: true
-                    }
-                },
-                messages: {
-                    username: {
-                        required: "Username is required"
-                    },
-                    password: {
-                        required: "Password is required"
-                    }
-                },
-                submitHandler: function(form, event) {
-                    event.preventDefault();
-                    $('#error').hide();
+        const app = angular.module('loginApp', []);
 
-                    // AJAX request
-                    $.ajax({
-                        url: '/dologin',
-                        type: 'POST',
-                        data: $(form).serialize(),
-                        success: function(response) {
-                            console.log('AJAX Success:', response);
+        app.controller('loginController', ['$scope', '$http', function($scope, $http) {
+            $scope.login = function() {
+                $scope.error = false;
 
-                            if (typeof response === 'string') {
-                                response = JSON.parse(response);
-                            }
-
-                            if (response.success) {
-                                window.location.href = response.redirectURL; // Redirect on success
-                            } else {
-                                $('#error').text('Invalid username or password').show();
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('AJAX Error:', status, error);
-                            console.error('Response:', xhr.responseText);
-
-                            $('#error').text('An error occurred. Please try again.').show(); // Show general error message
+                if ($scope.loginForm.$valid) {
+                    $http.post('/dologin', JSON.stringify({
+                        username: $scope.username,
+                        password: $scope.password
+                    })).then(function(response) {
+                        if (response.data.success) {
+                            window.location.href = response.data.redirectURL; // Redirect on success
+                        } else {
+                            $scope.errorMessage = 'Invalid username or password';
+                            $scope.error = true;
                         }
+                    }, function(error) {
+                        console.error('AJAX Error:', error);
+                        $scope.errorMessage = 'An error occurred. Please try again.';
+                        $scope.error = true;
                     });
-
-                    return false; // Prevent default form submission
                 }
-            });
-        });
+            };
+        }]);
     </script>
 </head>
-<body>
+<body ng-controller="loginController">
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mt-5">Login</h2>
-            <form id="loginForm" class="mt-4" method="post">
-                <div class="form-group">
+            <form name="loginForm" class="mt-4" method="post" ng-submit="login()" novalidate>
+                <div class="form-group" ng-class="{ 'has-error': loginForm.username.$touched && loginForm.username.$invalid }">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" name="username" id="username" required>
+                    <input type="text" class="form-control" name="username" id="username" ng-model="username" required>
+                    <div class="text-danger" ng-show="loginForm.username.$touched && loginForm.username.$invalid">
+                        Username is required
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error': loginForm.password.$touched && loginForm.password.$invalid }">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" id="password" required>
+                    <input type="password" class="form-control" name="password" id="password" ng-model="password" required>
+                    <div class="text-danger" ng-show="loginForm.password.$touched && loginForm.password.$invalid">
+                        Password is required
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                <button type="submit" class="btn btn-primary btn-block" ng-disabled="loginForm.$invalid">Submit</button>
             </form>
-            <p id="error" class="text-danger mt-3" style="display:none;"></p>
+            <p id="error" class="text-danger mt-3" ng-show="error">{{ errorMessage }}</p>
         </div>
     </div>
 </div>
