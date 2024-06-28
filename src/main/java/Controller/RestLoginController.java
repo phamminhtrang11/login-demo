@@ -34,6 +34,7 @@ public class RestLoginController {
         return restTemplate;
     }
     @PostMapping(value = "/dologin")
+    @ResponseBody
     public String checkUser(@RequestBody LoginReq req) {
         String apiUrl = "http://localhost:8080/api/login";
 

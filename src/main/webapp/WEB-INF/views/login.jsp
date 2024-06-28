@@ -11,12 +11,17 @@
         app.controller('loginController', ['$scope', '$http', function($scope, $http) {
             $scope.login = function() {
                 $scope.error = false;
-
-                if ($scope.loginForm.$valid) {
-                    $http.post('/dologin', JSON.stringify({
+                console.log("1111111111111", $scope.username, $scope.password)
+                var obj = {
                         username: $scope.username,
                         password: $scope.password
-                    })).then(function(response) {
+                    };
+                if ($scope.loginForm.$valid) {
+                    $http.post('/dologin'
+                        , JSON.stringify({
+                        username: $scope.username,
+                        password: $scope.password
+                    }), {}, 'application/json;charset=UTF-8').then(function(response) {
                         if (response.data.success) {
                             window.location.href = response.data.redirectURL; // Redirect on success
                         } else {
