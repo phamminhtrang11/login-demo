@@ -17,13 +17,14 @@
                         password: $scope.password
                     };
                 if ($scope.loginForm.$valid) {
-                    $http.post('/dologin'
-                        , JSON.stringify({
+                    $http.post('/dologin', {
                         username: $scope.username,
                         password: $scope.password
-                    }), {}, 'application/json;charset=UTF-8').then(function(response) {
-                        if (response.data.success) {
-                            window.location.href = response.data.redirectURL; // Redirect on success
+                    }).then(function(response) {
+                        console.log(response);
+                        let data = JSON.parse(response.data)
+                        if (data.success) {
+                            window.location.href = data.redirectURL; // Redirect on success
                         } else {
                             $scope.errorMessage = 'Invalid username or password';
                             $scope.error = true;
