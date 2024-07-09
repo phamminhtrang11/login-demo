@@ -1,17 +1,25 @@
 package Controller;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class RestLoginController {
@@ -22,7 +30,6 @@ public class RestLoginController {
     @Bean
     @Primary
     public RestTemplate restTemplate() {
-
         SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
         simpleClientHttpRequestFactory.setConnectTimeout(60000);
         simpleClientHttpRequestFactory.setReadTimeout(60000);
@@ -33,18 +40,30 @@ public class RestLoginController {
 
         return restTemplate;
     }
+
     @PostMapping(value = "/dologin")
     @ResponseBody
     public String checkUser(@RequestBody LoginReq req) {
         String apiUrl = "http://localhost:8080/api/login";
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", req.getUsername());
-        params.add("password", req.getPassword());
+        // Convert LoginReq object to JSON using Gson
+        Gson gson = new Gson();
+        String json = gson.toJson(req);
 
-        // Make the API call
-        String response = restTemplate.postForObject(apiUrl, params, String.class);
+        System.out.println("Request JSON: " + json);
 
-        return response;
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(json, headers);
+
+            // Make the API call
+            String response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class).getBody();
+            return response;
+        } catch (Exception e) {
+            // Log the exception and return an error message
+            e.printStackTrace();
+            return "Error: " + e.getMessage();
+        }
     }
 }
